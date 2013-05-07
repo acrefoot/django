@@ -108,7 +108,10 @@ class DatabaseWrapper(BaseDatabaseWrapper):
 
     def __init__(self, *args, **kwargs):
         super(DatabaseWrapper, self).__init__(*args, **kwargs)
-
+        if self.settings_dict.get('SCHEMA'):
+            self.settings_dict["OPTIONS"]["options"] = self.settings_dict["OPTIONS"].get("options", "") \
+                                                       + " -c search_path=" \
+                                                       + self.settings_dict.get('SCHEMA').strip()
         self.features = DatabaseFeatures(self)
         autocommit = self.settings_dict["OPTIONS"].get('autocommit', False)
         self.features.uses_autocommit = autocommit
