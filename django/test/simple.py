@@ -267,7 +267,7 @@ class DjangoTestSuiteRunner(object):
 
     def setup_databases(self, **kwargs):
         from django.db import connections, DEFAULT_DB_ALIAS
-
+        schema = settings.DATABASES['default'].get("SCHEMA")
         # First pass -- work out which databases actually need to be created,
         # and which ones are test mirrors or duplicate entries in DATABASES
         mirrored_aliases = {}
@@ -312,7 +312,7 @@ class DjangoTestSuiteRunner(object):
                 old_names.append((connection, db_name, True))
                 if test_db_name is None:
                     test_db_name = connection.creation.create_test_db(
-                            self.verbosity, autoclobber=not self.interactive)
+                            self.verbosity, autoclobber=not self.interactive, schema=schema)
                 else:
                     connection.settings_dict['NAME'] = test_db_name
 
