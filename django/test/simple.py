@@ -311,7 +311,11 @@ class DjangoTestSuiteRunner(object):
             for alias in aliases:
                 connection = connections[alias]
                 if test_db_name is None:
-                    test_db_name = connection.creation.create_test_db(
+                    if signature.count("django.db.backends.dummy"):
+                        test_db_name = connection.creation.create_test_db(
+                                self.verbosity, autoclobber=not self.interactive)
+                    else:
+                        test_db_name = connection.creation.create_test_db(
                             self.verbosity, autoclobber=not self.interactive, schema=schema)
                     destroy = True
                 else:
